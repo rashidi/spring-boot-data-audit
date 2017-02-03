@@ -262,9 +262,9 @@ As you can see at our final verification we assert that `modified` field should 
 previously had.
 
 ## Conclusion
-To recap. All we need in order to enable JPA auditing feature are:
+To recap. All we need in order to enable JPA auditing feature in this project are:
 
-  - `@@EnableJpaAuditing`
+  - `@EnableJpaAuditing`
   - `@EntityListeners`
   - `@CreatedDate`
   - `@LastModifiedDate`
