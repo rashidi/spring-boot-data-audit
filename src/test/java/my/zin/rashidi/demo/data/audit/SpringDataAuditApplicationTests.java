@@ -40,12 +40,22 @@ public class SpringDataAuditApplicationTests {
         ZonedDateTime created = user.getCreated();
         ZonedDateTime modified = user.getModified();
 
-        user = userRepository.save(user.setUsername("rashidi"));
+        userRepository.save(
+            new User()
+                .setId(user.getId())
+                .setName(user.getName())
+                .setUsername("rashidi")
+        );
 
-        assertThat(user.getCreated())
+        User updatedUser = userRepository.findOne(user.getId());
+
+        assertThat(updatedUser.getUsername())
+            .isEqualTo("rashidi");
+
+        assertThat(updatedUser.getCreated())
             .isEqualTo(created);
 
-        assertThat(user.getModified())
+        assertThat(updatedUser.getModified())
             .isGreaterThan(modified);
     }
 }

@@ -33,6 +33,7 @@ public class User {
         return this;
     }
 
+    @Column(nullable = false)
     public String getName() {
         return name;
     }
@@ -44,6 +45,7 @@ public class User {
         return this;
     }
 
+    @Column
     public String getUsername() {
         return username;
     }
@@ -56,6 +58,7 @@ public class User {
     }
 
     @CreatedDate
+    @Column(nullable = false, updatable = false)
     public ZonedDateTime getCreated() {
         return created;
     }
@@ -66,6 +69,7 @@ public class User {
     }
 
     @LastModifiedDate
+    @Column(nullable = false)
     public ZonedDateTime getModified() {
         return modified;
     }
