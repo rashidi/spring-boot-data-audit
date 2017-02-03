@@ -1,4 +1,4 @@
-# Spring Data Jpa Audit Example
+# Spring Data Jpa Audit Example [![Build Status](https://travis-ci.org/rashidi/spring-boot-data-audit.svg?branch=master)](https://travis-ci.org/rashidi/spring-boot-data-audit)
 Enable auditing with Spring Data Jpa's `@CreatedDate` and `@LastModified`
 
 ## Background
