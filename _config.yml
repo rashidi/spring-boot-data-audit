@@ -1,1 +1,3 @@
 theme: jekyll-theme-modernist
+title: Rashidi Zin: Spring Data Jpa Audit Example
+description: Enable database entity audit with Spring Boot and Spring Data Jpa's Audit
