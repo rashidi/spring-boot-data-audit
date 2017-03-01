@@ -5,3 +5,6 @@ jdk:
 
 before_install:
   - chmod +x mvnw
+
+after_success:
+  - mvn sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=8c12637593486999cb7cbe0e221c06cd501234c5
