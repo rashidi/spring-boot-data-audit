@@ -1,6 +1,8 @@
 package my.zin.rashidi.demo.data.audit.domain;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
@@ -16,26 +18,34 @@ import java.time.ZonedDateTime;
 @Table
 public class User {
 
-    private Long id;
-    private String name;
-    private String username;
-    private ZonedDateTime created;
-    private ZonedDateTime modified;
-
     @Id
     @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    public User setId(Long id) {
-        this.id = id;
-        return this;
-    }
+    private Long id;
 
     @Column(nullable = false)
-    public String getName() {
-        return name;
+    private String name;
+
+    @Column(nullable = false)
+    private String username;
+
+    @CreatedBy
+    @Column(nullable = false, updatable = false)
+    private String createdBy;
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private ZonedDateTime created;
+
+    @LastModifiedBy
+    @Column(nullable = false)
+    private String modifiedBy;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private ZonedDateTime modified;
+
+    public Long getId() {
+        return id;
     }
 
     public User setName(String name) {
@@ -45,7 +55,6 @@ public class User {
         return this;
     }
 
-    @Column
     public String getUsername() {
         return username;
     }
@@ -57,25 +66,19 @@ public class User {
         return this;
     }
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
     public ZonedDateTime getCreated() {
         return created;
     }
 
-    public User setCreated(ZonedDateTime created) {
-        this.created = created;
-        return this;
-    }
-
-    @LastModifiedDate
-    @Column(nullable = false)
     public ZonedDateTime getModified() {
         return modified;
     }
 
-    public User setModified(ZonedDateTime modified) {
-        this.modified = modified;
-        return this;
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public String getModifiedBy() {
+        return modifiedBy;
     }
 }

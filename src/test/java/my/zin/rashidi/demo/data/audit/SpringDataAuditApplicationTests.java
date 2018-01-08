@@ -33,6 +33,12 @@ public class SpringDataAuditApplicationTests {
 
         assertThat(user.getModified())
             .isNotNull();
+
+        assertThat(user.getCreatedBy())
+                .isEqualTo("Mr. Auditor");
+
+        assertThat(user.getModifiedBy())
+                .isEqualTo("Mr. Auditor");
     }
 
     @Test
@@ -41,10 +47,7 @@ public class SpringDataAuditApplicationTests {
         ZonedDateTime modified = user.getModified();
 
         userRepository.save(
-            new User()
-                .setId(user.getId())
-                .setName(user.getName())
-                .setUsername("rashidi")
+                user.setUsername("rashidi")
         );
 
         User updatedUser = userRepository.findOne(user.getId());

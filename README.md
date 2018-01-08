@@ -14,66 +14,33 @@ structure is as follows:
 @Table
 public class User {
     
-    private Long id;
-    private String name;
-    private String username;
-    private ZonedDateTime created;
-    private ZonedDateTime modified;
-    
     @Id
     @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-    
-    public User setId(Long id) {
-        this.id = id;
-        return this;
-    }
-    
+    private Long id;
+
     @Column(nullable = false)
-    public String getName() {
-        return name;
-    }
-    
-    public User setName(String name) {
-        Assert.hasText(name, "name is required");
+    private String name;
 
-        this.name = name;
-        return this;
-    }
-    
-    @Column
-    public String getUsername() {
-        return username;
-    }
-    
-    public User setUsername(String username) {
-        Assert.hasText(username, "username is required");
+    @Column(nullable = false)
+    private String username;
 
-        this.username = username;
-        return this;
-    }
-    
+    @CreatedBy
     @Column(nullable = false, updatable = false)
-    public ZonedDateTime getCreated() {
-        return created;
-    }
-    
-    public User setCreated(ZonedDateTime created) {
-        this.created = created;
-        return this;
-    }
-    
+    private String createdBy;
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private ZonedDateTime created;
+
+    @LastModifiedBy
     @Column(nullable = false)
-    public ZonedDateTime getModified() {
-        return modified;
-    }
+    private String modifiedBy;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private ZonedDateTime modified;
     
-    public User setModified(ZonedDateTime modified) {
-        this.modified = modified;
-        return this;
-    }
+    // omitted getter / setter
 }
 ```
 
@@ -99,81 +66,69 @@ The final look of `User` class:
 @Table
 public class User {
     
-    private Long id;
-    private String name;
-    private String username;
-    private ZonedDateTime created;
-    private ZonedDateTime modified;
-    
     @Id
     @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-    
-    public User setId(Long id) {
-        this.id = id;
-        return this;
-    }
-    
+    private Long id;
+
     @Column(nullable = false)
-    public String getName() {
-        return name;
-    }
-    
-    public User setName(String name) {
-        Assert.hasText(name, "name is required");
+    private String name;
 
-        this.name = name;
-        return this;
-    }
-    
-    @Column
-    public String getUsername() {
-        return username;
-    }
-    
-    public User setUsername(String username) {
-        Assert.hasText(username, "username is required");
+    @Column(nullable = false)
+    private String username;
 
-        this.username = username;
-        return this;
-    }
-    
+    @CreatedBy
+    @Column(nullable = false, updatable = false)
+    private String createdBy;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    public ZonedDateTime getCreated() {
-        return created;
-    }
-    
-    public User setCreated(ZonedDateTime created) {
-        this.created = created;
-        return this;
-    }
-    
+    private ZonedDateTime created;
+
+    @LastModifiedBy
+    @Column(nullable = false)
+    private String modifiedBy;
+
     @LastModifiedDate
     @Column(nullable = false)
-    public ZonedDateTime getModified() {
-        return modified;
-    }
+    private ZonedDateTime modified;
     
-    public User setModified(ZonedDateTime modified) {
-        this.modified = modified;
-        return this;
-    }
+    // omitted getter / setter
 }
 ```
 
-As you can see `Person` is now annotated with `@EntityListeners` while `created` and `modified` columns are annotated
-with `@CreatedDate` and `@LastModifiedDate`. Next we will need to create a `Configuration` class to enable JpaAuditing.
+As you can see `User` is now annotated with `@EntityListeners` while `created`, `createdBy`, `modified`, and `modifiedBy` columns are annotated
+with `@CreatedDate`, `@CreatedBy`, `@LastModifiedDate`, and `@LastModifiedBy`. `createdBy` and `modifiedBy` fields will be automatically populated
+if [Spring Security][6] is available in the project path. Alternatively we wil implement our own [AuditorAware][7] in order to inform Spring who
+is the current auditor.
 
-In this project we have [AuditConfiguration][4] class which is responsible to inform Spring Data that we would like
-to enable Auditing. This can be achieved with a simple annotation, `@EnableJpaAuditing`
+In [AuditorAwareImpl][8] we can see that current implementation **Mr. Auditor** is hardcoded as the current auditor. You can replace the implementation
+to assign the current auditor.
+
+```
+public class AuditorAwareImpl implements AuditorAware<String> {
+
+    @Override
+    public String getCurrentAuditor() {
+        return "Mr. Auditor";
+    }
+
+}
+```
+
+Next we will need to create a `Configuration` class to enable JpaAuditing. In this project we have [AuditConfiguration][4] class which is responsible 
+to inform Spring Data that we would like to enable Auditing and to use our own AuditorAware implementation.  This can be achieved by 
+registering AuditorAware `@Bean` and `@EnableJpaAuditing` annotation along with `auditorAwareRef` configuration.
 
 ```java
 @Configuration
-@EnableJpaAuditing
+@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public class AuditConfiguration {
+    
+        @Bean
+        public AuditorAware<String> auditorProvider() {
+            return new AuditorAwareImpl();
+        }
+        
 }
 ```
 
@@ -238,20 +193,17 @@ public class SpringDataAuditApplicationTests {
         ZonedDateTime modified = user.getModified();
         
         userRepository.save(
-            new User()
-                .setId(user.getId())
-                .setName(user.getName())
-                .setUsername("rashidi")
+            user.setUsername("rashidi")
         );
         
         User updatedUser = userRepository.findOne(user.getId());
-        
+
         assertThat(updatedUser.getUsername())
             .isEqualTo("rashidi");
-        
+
         assertThat(updatedUser.getCreated())
             .isEqualTo(created);
-        
+
         assertThat(updatedUser.getModified())
             .isGreaterThan(modified);
     }
@@ -266,7 +218,9 @@ To recap. All we need in order to enable JPA auditing feature in this project ar
 
   - `@EnableJpaAuditing`
   - `@EntityListeners`
+  - `@CreatedBy`
   - `@CreatedDate`
+  - `@LastModifiedBy`
   - `@LastModifiedDate`
 
 [1]: http://docs.spring.io/spring-data/jpa/docs/current/reference/html/
@@ -274,3 +228,6 @@ To recap. All we need in order to enable JPA auditing feature in this project ar
 [3]: http://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.auditing
 [4]: src/main/java/my/zin/rashidi/demo/data/audit/configuration/AuditConfiguration.java
 [5]: src/test/java/my/zin/rashidi/demo/data/audit/SpringDataAuditApplicationTests.java
+[6]: https://projects.spring.io/spring-security/
+[7]: https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/domain/AuditorAware.html
+[8]: src/main/java/my/zin/rashidi/demo/data/audit/configuration/AuditorAwareImpl.java
