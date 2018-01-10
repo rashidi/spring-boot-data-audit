@@ -104,7 +104,7 @@ is the current auditor.
 In [AuditorAwareImpl][8] we can see that current implementation **Mr. Auditor** is hardcoded as the current auditor. You can replace the implementation
 to assign the current auditor.
 
-```
+```java
 public class AuditorAwareImpl implements AuditorAware<String> {
 
     @Override
