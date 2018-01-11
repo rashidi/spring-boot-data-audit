@@ -168,6 +168,12 @@ public class SpringDataAuditApplicationTests {
         
         assertThat(user.getModified())
             .isNotNull();
+        
+        assertThat(user.getCreatedBy())
+                .isEqualTo("Mr. Auditor");
+
+        assertThat(user.getModifiedBy())
+                .isEqualTo("Mr. Auditor");        
     }
     
     // rest of the content is omitted
