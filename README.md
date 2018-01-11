@@ -19,9 +19,11 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "name is required")
     private String name;
 
     @Column(nullable = false)
+    @NotBlank(message = "username is required")
     private String username;
 
     @CreatedBy
@@ -71,9 +73,11 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "name is required")
     private String name;
 
     @Column(nullable = false)
+    @NotBlank(message = "username is required")
     private String username;
 
     @CreatedBy

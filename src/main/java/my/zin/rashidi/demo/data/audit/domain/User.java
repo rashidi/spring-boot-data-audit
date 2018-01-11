@@ -1,11 +1,11 @@
 package my.zin.rashidi.demo.data.audit.domain;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
@@ -23,9 +23,11 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "name is required")
     private String name;
 
     @Column(nullable = false)
+    @NotBlank(message = "username is required")
     private String username;
 
     @CreatedBy
@@ -49,8 +51,6 @@ public class User {
     }
 
     public User setName(String name) {
-        Assert.hasText(name, "name is required");
-
         this.name = name;
         return this;
     }
@@ -60,8 +60,6 @@ public class User {
     }
 
     public User setUsername(String username) {
-        Assert.hasText(username, "username is required");
-
         this.username = username;
         return this;
     }
