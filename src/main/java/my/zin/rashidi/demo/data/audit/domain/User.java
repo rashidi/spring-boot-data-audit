@@ -1,6 +1,5 @@
 package my.zin.rashidi.demo.data.audit.domain;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -8,7 +7,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.ZonedDateTime;
+import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 /**
  * @author Rashidi Zin
@@ -36,7 +36,7 @@ public class User {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private ZonedDateTime created;
+    private LocalDateTime created;
 
     @LastModifiedBy
     @Column(nullable = false)
@@ -44,7 +44,7 @@ public class User {
 
     @LastModifiedDate
     @Column(nullable = false)
-    private ZonedDateTime modified;
+    private LocalDateTime modified;
 
     public Long getId() {
         return id;
@@ -64,11 +64,11 @@ public class User {
         return this;
     }
 
-    public ZonedDateTime getCreated() {
+    public LocalDateTime getCreated() {
         return created;
     }
 
-    public ZonedDateTime getModified() {
+    public LocalDateTime getModified() {
         return modified;
     }
 

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,22 +43,24 @@ public class SpringDataAuditApplicationTests {
 
     @Test
     public void update() {
-        ZonedDateTime created = user.getCreated();
-        ZonedDateTime modified = user.getModified();
+        LocalDateTime created = user.getCreated();
+        LocalDateTime modified = user.getModified();
 
         userRepository.save(
                 user.setUsername("rashidi")
         );
 
-        User updatedUser = userRepository.findOne(user.getId());
+        userRepository.findById(user.getId())
+                .ifPresent(updatedUser -> {
 
-        assertThat(updatedUser.getUsername())
-            .isEqualTo("rashidi");
+                    assertThat(updatedUser.getUsername())
+                            .isEqualTo("rashidi");
 
-        assertThat(updatedUser.getCreated())
-            .isEqualTo(created);
+                    assertThat(updatedUser.getCreated())
+                            .isEqualTo(created);
 
-        assertThat(updatedUser.getModified())
-            .isGreaterThan(modified);
+                    assertThat(updatedUser.getModified())
+                            .isAfter(modified);
+                });
     }
 }
