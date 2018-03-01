@@ -32,7 +32,7 @@ public class User {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private ZonedDateTime created;
+    private LocalDateTime created;
 
     @LastModifiedBy
     @Column(nullable = false)
@@ -40,7 +40,7 @@ public class User {
 
     @LastModifiedDate
     @Column(nullable = false)
-    private ZonedDateTime modified;
+    private LocalDateTime modified;
     
     // omitted getter / setter
 }
@@ -86,7 +86,7 @@ public class User {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private ZonedDateTime created;
+    private LocalDateTime created;
 
     @LastModifiedBy
     @Column(nullable = false)
@@ -94,7 +94,7 @@ public class User {
 
     @LastModifiedDate
     @Column(nullable = false)
-    private ZonedDateTime modified;
+    private LocalDateTime modified;
     
     // omitted getter / setter
 }
@@ -112,8 +112,8 @@ to assign the current auditor.
 public class AuditorAwareImpl implements AuditorAware<String> {
 
     @Override
-    public String getCurrentAuditor() {
-        return "Mr. Auditor";
+    public Optional<String> getCurrentAuditor() {
+        return Optional.of("Mr. Auditor");
     }
 
 }
@@ -199,23 +199,25 @@ public class SpringDataAuditApplicationTests {
     
     @Test
     public void update() {
-        ZonedDateTime created = user.getCreated();
-        ZonedDateTime modified = user.getModified();
-        
+        LocalDateTime created = user.getCreated();
+        LocalDateTime modified = user.getModified();
+
         userRepository.save(
-            user.setUsername("rashidi")
+                user.setUsername("rashidi")
         );
-        
-        User updatedUser = userRepository.findOne(user.getId());
 
-        assertThat(updatedUser.getUsername())
-            .isEqualTo("rashidi");
+        userRepository.findById(user.getId())
+                .ifPresent(updatedUser -> {
 
-        assertThat(updatedUser.getCreated())
-            .isEqualTo(created);
+                    assertThat(updatedUser.getUsername())
+                            .isEqualTo("rashidi");
 
-        assertThat(updatedUser.getModified())
-            .isGreaterThan(modified);
+                    assertThat(updatedUser.getCreated())
+                            .isEqualTo(created);
+
+                    assertThat(updatedUser.getModified())
+                            .isAfter(modified);
+                });
     }
 }
 ```
