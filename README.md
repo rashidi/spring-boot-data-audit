@@ -148,7 +148,6 @@ There is no better way to verify an implementation other than running some tests
 In the following test we will see that values for `created` and `modified` are assigned by Spring itself:
 
 ```java
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class SpringDataAuditApplicationTests {
     
@@ -188,7 +187,6 @@ In the following test we will change the `username` without changing `modified` 
 field will have a recent time as compare to when it was created:
 
 ```java
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class SpringDataAuditApplicationTests {
     
@@ -213,7 +211,7 @@ public class SpringDataAuditApplicationTests {
                             .isEqualTo("rashidi");
 
                     assertThat(updatedUser.getCreated())
-                            .isEqualTo(created);
+                            .isEqualToIgnoringNanos(created);
 
                     assertThat(updatedUser.getModified())
                             .isAfter(modified);
