@@ -1,4 +1,4 @@
-# Spring Data Jpa Audit Example [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=rashidi/spring-boot-data-audit)](https://dependabot.com)
+# Spring Data Jpa Audit Example
 Enable auditing with Spring Data Jpa's `@CreatedDate` and `@LastModified`
 
 ## Background
